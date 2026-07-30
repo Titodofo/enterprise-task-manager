@@ -22,4 +22,7 @@ public class EmpleadoController {
         empleado.setId(id);
         return empleado;
     }
+
+    @DeleteMapping("/empleados/{id}")
+    public void deleteEmpleado(@PathVariable int id) {}
 }
