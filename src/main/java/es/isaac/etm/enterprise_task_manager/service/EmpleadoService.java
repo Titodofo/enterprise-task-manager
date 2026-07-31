@@ -5,6 +5,8 @@ import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.repository.EmpleadoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmpleadoService {
 
@@ -16,6 +18,10 @@ public class EmpleadoService {
 
     public Empleado save(Empleado empleado) {
         return empleadoRepository.save(empleado);
+    }
+
+    public List<Empleado> findAll() {
+        return empleadoRepository.findAll();
     }
 
     public Empleado findById(int id) {
