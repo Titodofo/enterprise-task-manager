@@ -21,25 +21,23 @@ public class EmpleadoController {
         Empleado empleado = empleadoService.findById(id);
         return ResponseEntity.ok(empleado);
     }
-/*
+
     @PostMapping("/empleados")
     public ResponseEntity<Empleado> createEmpleado(@Valid @RequestBody Empleado empleado) {
-        empleadoRepository.save(empleado);
-        return new ResponseEntity<>(empleado, HttpStatus.CREATED);
+        Empleado empleadoGuardado = empleadoService.save(empleado);
+        return new ResponseEntity<>(empleadoGuardado, HttpStatus.CREATED);
     }
 
     @PutMapping("/empleados/{id}")
     public ResponseEntity<Empleado> updateEmpleado(@PathVariable int id, @Valid @RequestBody Empleado empleado) {
-        empleado.setId(id);
-        empleadoRepository.update(empleado);
+        empleadoService.update(id, empleado);
         return new ResponseEntity<>(empleado, HttpStatus.OK);
     }
 
     @DeleteMapping("/empleados/{id}")
     public ResponseEntity<Void> deleteEmpleado(@PathVariable int id) {
-        empleadoRepository.delete(id);
+        empleadoService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
- */
 }

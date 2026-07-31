@@ -14,11 +14,26 @@ public class EmpleadoService {
         this.empleadoRepository = empleadoRepository;
     }
 
+    public Empleado save(Empleado empleado) {
+        return empleadoRepository.save(empleado);
+    }
+
     public Empleado findById(int id) {
         Empleado empleado = empleadoRepository.findById(id);
         if (empleado == null) {
             throw new EmpleadoNotFoundException("Empleado con id: "+ id + " no encontrado");
         }
         return empleado;
+    }
+
+    public void update(int id, Empleado empleado) {
+        findById(id);
+        empleado.setId(id);
+        empleadoRepository.update(empleado);
+    }
+
+    public void delete(int id) {
+        findById(id);
+        empleadoRepository.delete(id);
     }
 }
