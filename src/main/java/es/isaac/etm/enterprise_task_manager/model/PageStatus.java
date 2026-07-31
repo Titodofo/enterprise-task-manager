@@ -1,13 +1,5 @@
 package es.isaac.etm.enterprise_task_manager.model;
 
-import lombok.Getter;
+public record PageStatus(String status) {
 
-@Getter
-public class PageStatus {
-
-    private final String status;
-
-    public PageStatus(String status) {
-        this.status = status;
-    }
 }

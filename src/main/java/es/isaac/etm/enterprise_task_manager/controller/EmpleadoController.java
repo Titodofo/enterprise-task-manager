@@ -1,7 +1,7 @@
 package es.isaac.etm.enterprise_task_manager.controller;
 
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
-import es.isaac.etm.enterprise_task_manager.repository.EmpleadoRepository;
+import es.isaac.etm.enterprise_task_manager.service.EmpleadoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,24 +10,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class EmpleadoController {
 
-    private final EmpleadoRepository empleadoRepository;
+    private final EmpleadoService empleadoService;
 
-    public EmpleadoController(EmpleadoRepository empleadoRepository) {
-        this.empleadoRepository = empleadoRepository;
+    public EmpleadoController(EmpleadoService empleadoService) {
+        this.empleadoService = empleadoService;
     }
 
     @GetMapping("/empleados/{id}")
-    public Empleado getEmpleadoById(@PathVariable int id) {
-        return empleadoRepository.findById(id);
+    public ResponseEntity<Empleado> getEmpleadoById(@PathVariable int id) {
+        Empleado empleado = empleadoService.findById(id);
+        return ResponseEntity.ok(empleado);
     }
-
+/*
     @PostMapping("/empleados")
     public ResponseEntity<Empleado> createEmpleado(@Valid @RequestBody Empleado empleado) {
         empleadoRepository.save(empleado);
         return new ResponseEntity<>(empleado, HttpStatus.CREATED);
     }
 
-    @PutMapping ("/empleados/{id}")
+    @PutMapping("/empleados/{id}")
     public ResponseEntity<Empleado> updateEmpleado(@PathVariable int id, @Valid @RequestBody Empleado empleado) {
         empleado.setId(id);
         empleadoRepository.update(empleado);
@@ -39,4 +40,6 @@ public class EmpleadoController {
         empleadoRepository.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+ */
 }
