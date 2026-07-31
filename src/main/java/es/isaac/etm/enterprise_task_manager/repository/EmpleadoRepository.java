@@ -1,12 +1,14 @@
 package es.isaac.etm.enterprise_task_manager.repository;
 
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class EmpleadoRepository {
 
     private final Map<Integer, Empleado> empleados;
