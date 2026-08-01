@@ -50,7 +50,6 @@ public class EmpleadoService {
     }
 
     public void delete(int id) {
-        findById(id);
         empleadoRepository.delete(id);
     }
 }

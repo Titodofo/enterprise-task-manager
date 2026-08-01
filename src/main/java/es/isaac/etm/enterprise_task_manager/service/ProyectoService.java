@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @Service
-public class    ProyectoService {
+public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
     private final EmpleadoService empleadoService;
@@ -54,7 +54,6 @@ public class    ProyectoService {
     }
 
     public void delete(int id) {
-        findById(id);
         proyectoRepository.delete(id);
     }
 
