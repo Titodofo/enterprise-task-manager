@@ -29,6 +29,7 @@ public class EmpleadoController {
         return ResponseEntity.ok(empleadoService.findAll());
     }
 
+
     @PostMapping("/empleados")
     public ResponseEntity<Empleado> createEmpleado(@Valid @RequestBody Empleado empleado) {
         Empleado empleadoGuardado = empleadoService.save(empleado);
