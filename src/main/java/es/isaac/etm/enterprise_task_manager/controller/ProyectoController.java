@@ -26,7 +26,10 @@ public class ProyectoController {
     }
 
     @GetMapping("/proyectos")
-    public ResponseEntity<List<Proyecto>> getAllProyectos() {
+    public ResponseEntity<List<Proyecto>> getProyectos(@RequestParam(required = false) String nombre) {
+        if (nombre != null) {
+            return new ResponseEntity<>(proyectoService.findByNombre(nombre), HttpStatus.OK);
+        }
         return ResponseEntity.ok(proyectoService.findAll());
     }
 

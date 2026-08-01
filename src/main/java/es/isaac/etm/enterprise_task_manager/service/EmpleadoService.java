@@ -5,6 +5,7 @@ import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.repository.EmpleadoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +31,16 @@ public class EmpleadoService {
             throw new EmpleadoNotFoundException("Empleado con id: " + id + " no encontrado");
         }
         return empleado;
+    }
+
+    public List<Empleado> findByNombre(String nombre) {
+        List<Empleado> empleadoList = new ArrayList<>();
+        for (Empleado e : empleadoRepository.findAll()) {
+            if (e.getNombre().equals(nombre)) {
+                empleadoList.add(e);
+            }
+        }
+        return empleadoList;
     }
 
     public void update(int id, Empleado empleado) {

@@ -18,22 +18,24 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
-    @GetMapping("/empleados/{id}")
-    public ResponseEntity<Empleado> getEmpleadoById(@PathVariable int id) {
-        Empleado empleado = empleadoService.findById(id);
-        return ResponseEntity.ok(empleado);
-    }
-
-    @GetMapping("/empleados")
-    public ResponseEntity<List<Empleado>> getAllEmpleados() {
-        return ResponseEntity.ok(empleadoService.findAll());
-    }
-
-
     @PostMapping("/empleados")
     public ResponseEntity<Empleado> createEmpleado(@Valid @RequestBody Empleado empleado) {
         Empleado empleadoGuardado = empleadoService.save(empleado);
         return new ResponseEntity<>(empleadoGuardado, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/empleados")
+    public ResponseEntity<List<Empleado>> getEmpleados(@RequestParam(required = false) String nombre) {
+        if (nombre != null) {
+            return new ResponseEntity<>(empleadoService.findByNombre(nombre), HttpStatus.OK);
+        }
+        return ResponseEntity.ok(empleadoService.findAll());
+    }
+
+    @GetMapping("/empleados/{id}")
+    public ResponseEntity<Empleado> getEmpleadoById(@PathVariable int id) {
+        Empleado empleado = empleadoService.findById(id);
+        return ResponseEntity.ok(empleado);
     }
 
     @PutMapping("/empleados/{id}")
