@@ -1,6 +1,7 @@
 package es.isaac.etm.enterprise_task_manager.service;
 
 import es.isaac.etm.enterprise_task_manager.exception.EmpleadoNotFoundException;
+import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.model.Proyecto;
 import es.isaac.etm.enterprise_task_manager.repository.ProyectoRepository;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,11 @@ import java.util.List;
 public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
+    private final EmpleadoService empleadoService;
 
-    public ProyectoService(ProyectoRepository proyectoRepository) {
+    public ProyectoService(ProyectoRepository proyectoRepository,  EmpleadoService empleadoService) {
         this.proyectoRepository = proyectoRepository;
+        this.empleadoService = empleadoService;
     }
 
     public Proyecto save(Proyecto proyecto) {
@@ -30,7 +33,7 @@ public class ProyectoService {
         if (proyecto == null) {
             throw new EmpleadoNotFoundException("Proyecto con id: " + id + " no encontrado");
         }
-        return proyectoRepository.findById(id);
+        return proyecto;
     }
 
     public void update(int id, Proyecto proyecto) {
@@ -41,6 +44,22 @@ public class ProyectoService {
     public void delete(int id) {
         findById(id);
         proyectoRepository.delete(id);
+    }
+
+    public void addEmpleado(Integer idProyecto, Integer idEmpleado) {
+        Proyecto proyecto = findById(idProyecto);
+        Empleado empleado = empleadoService.findById(idEmpleado);
+        if (proyecto.getEmpleados().contains(empleado)) {
+            throw new EmpleadoNotFoundException("Empleado con id: " + idEmpleado + " no encontrado");
+        }
+        proyecto.addEmpleado(empleado);
+        update(idProyecto, proyecto);
+    }
+
+    public void deleteEmpleado(Integer idProyecto, Integer idEmpleado) {
+        Proyecto proyecto = findById(idProyecto);
+        proyecto.removeEmpleado(empleadoService.findById(idEmpleado));
+        update(idProyecto, proyecto);
     }
 
 }

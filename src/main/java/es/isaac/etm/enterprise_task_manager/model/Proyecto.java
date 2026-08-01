@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -21,5 +22,14 @@ public class Proyecto {
     private String descripcion;
     private LocalDate inicio;
     private LocalDate fin;
-    private List<Empleado> empleados;
+    private List<Empleado> empleados = new ArrayList<>();
+
+
+    public void addEmpleado(Empleado empleado) {
+        empleados.add(empleado);
+    }
+
+    public void removeEmpleado(Empleado empleado) {
+        empleados.remove(empleado);
+    }
 }

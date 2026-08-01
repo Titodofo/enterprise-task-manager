@@ -46,4 +46,16 @@ public class ProyectoController {
         proyectoService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/proyectos/{idProyecto}/empleados/{idEmpleado}")
+    public ResponseEntity<Void> addEmpleado(@PathVariable Integer idProyecto, @PathVariable Integer idEmpleado) {
+        proyectoService.addEmpleado(idProyecto, idEmpleado);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/proyectos/{idProyecto}/empleados/{idEmpleado}")
+    public ResponseEntity<Void> deleteEmpleado(@PathVariable Integer idProyecto, @PathVariable Integer idEmpleado) {
+        proyectoService.deleteEmpleado(idProyecto, idEmpleado);
+        return ResponseEntity.noContent().build();
+    }
 }
