@@ -26,11 +26,7 @@ public class EmpleadoService {
     }
 
     public Empleado findById(int id) {
-        Empleado empleado = empleadoRepository.findById(id);
-        if (empleado == null) {
-            throw new EmpleadoNotFoundException("Empleado con id: " + id + " no encontrado");
-        }
-        return empleado;
+        return empleadoRepository.findById(id).orElseThrow( () ->  new EmpleadoNotFoundException("Empleado con id: " + id + " no encontrado"));
     }
 
     public List<Empleado> findByNombre(String nombre) {
@@ -46,10 +42,11 @@ public class EmpleadoService {
     public void update(int id, Empleado empleado) {
         findById(id);
         empleado.setId(id);
-        empleadoRepository.update(empleado);
+        empleadoRepository.save(empleado);
     }
 
     public void delete(int id) {
-        empleadoRepository.delete(id);
+        Empleado empleado = findById(id);
+        empleadoRepository.delete(empleado);
     }
 }

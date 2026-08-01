@@ -31,11 +31,7 @@ public class ProyectoService {
     }
 
     public Proyecto findById(int id) {
-        Proyecto proyecto = proyectoRepository.findById(id);
-        if (proyecto == null) {
-            throw new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado");
-        }
-        return proyecto;
+        return proyectoRepository.findById(id).orElseThrow( () -> new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado"));
     }
 
     public List<Proyecto> findByNombre(String nombre) {
@@ -50,11 +46,13 @@ public class ProyectoService {
 
     public void update(int id, Proyecto proyecto) {
         findById(id);
-        proyectoRepository.update(id, proyecto);
+        proyecto.setId(id);
+        proyectoRepository.save(proyecto);
     }
 
     public void delete(int id) {
-        proyectoRepository.delete(id);
+        Proyecto proyecto = findById(id);
+        proyectoRepository.delete(proyecto);
     }
 
     public void addEmpleado(Integer idProyecto, Integer idEmpleado) {
