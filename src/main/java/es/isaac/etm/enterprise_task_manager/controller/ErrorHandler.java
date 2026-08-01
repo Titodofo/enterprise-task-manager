@@ -2,7 +2,8 @@ package es.isaac.etm.enterprise_task_manager.controller;
 
 import es.isaac.etm.enterprise_task_manager.dto.ApiError;
 import es.isaac.etm.enterprise_task_manager.dto.ValidationError;
-import es.isaac.etm.enterprise_task_manager.exception.EmpleadoNotFoundException;
+import es.isaac.etm.enterprise_task_manager.exception.ConflictException;
+import es.isaac.etm.enterprise_task_manager.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class ErrorHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EmpleadoNotFoundException.class)
-    public ResponseEntity<ApiError> handleEmpleadoNotFoundException(EmpleadoNotFoundException e, HttpServletRequest request) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiError> handleNotFoundException(NotFoundException e, HttpServletRequest request) {
         ApiError error = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -48,6 +49,23 @@ public class ErrorHandler {
                 null
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflictException(
+            ConflictException e,
+            HttpServletRequest request) {
+
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                e.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
 }

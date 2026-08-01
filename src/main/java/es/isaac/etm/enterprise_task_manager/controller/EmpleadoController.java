@@ -19,7 +19,7 @@ public class EmpleadoController {
     }
 
     @PostMapping("/empleados")
-    public ResponseEntity<Empleado> createEmpleado(@Valid @RequestBody Empleado empleado) {
+    public ResponseEntity<Empleado> save(@Valid @RequestBody Empleado empleado) {
         Empleado empleadoGuardado = empleadoService.save(empleado);
         return new ResponseEntity<>(empleadoGuardado, HttpStatus.CREATED);
     }

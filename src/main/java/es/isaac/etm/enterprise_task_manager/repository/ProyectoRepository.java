@@ -12,8 +12,8 @@ import java.util.Map;
 @Repository
 public class ProyectoRepository {
 
-    Map<Integer, Proyecto> proyectos;
-    int nextId = 1;
+    private final Map<Integer, Proyecto> proyectos;
+    private int nextId = 1;
 
     public ProyectoRepository() {
         proyectos = new HashMap<>();
