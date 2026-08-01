@@ -1,6 +1,7 @@
 package es.isaac.etm.enterprise_task_manager.service;
 
-import es.isaac.etm.enterprise_task_manager.exception.EmpleadoNotFoundException;
+import es.isaac.etm.enterprise_task_manager.exception.EmpleadoAlreadyAssignedException;
+import es.isaac.etm.enterprise_task_manager.exception.ProyectoNotFoundException;
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.model.Proyecto;
 import es.isaac.etm.enterprise_task_manager.repository.ProyectoRepository;
@@ -11,7 +12,7 @@ import java.util.List;
 
 
 @Service
-public class ProyectoService {
+public class    ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
     private final EmpleadoService empleadoService;
@@ -32,7 +33,7 @@ public class ProyectoService {
     public Proyecto findById(int id) {
         Proyecto proyecto = proyectoRepository.findById(id);
         if (proyecto == null) {
-            throw new EmpleadoNotFoundException("Proyecto con id: " + id + " no encontrado");
+            throw new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado");
         }
         return proyecto;
     }
@@ -61,7 +62,7 @@ public class ProyectoService {
         Proyecto proyecto = findById(idProyecto);
         Empleado empleado = empleadoService.findById(idEmpleado);
         if (proyecto.getEmpleados().contains(empleado)) {
-            throw new EmpleadoNotFoundException("Empleado con id: " + idEmpleado + " no encontrado");
+            throw new EmpleadoAlreadyAssignedException("Empleado con id: " + idEmpleado + " ya forma parte del proyecto");
         }
         proyecto.addEmpleado(empleado);
         update(idProyecto, proyecto);
