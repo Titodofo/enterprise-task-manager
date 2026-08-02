@@ -5,6 +5,7 @@ import es.isaac.etm.enterprise_task_manager.exception.ProyectoNotFoundException;
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.model.Proyecto;
 import es.isaac.etm.enterprise_task_manager.repository.ProyectoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class ProyectoService {
         proyectoRepository.delete(proyecto);
     }
 
+    @Transactional
     public void addEmpleado(Integer idProyecto, Integer idEmpleado) {
         Proyecto proyecto = findById(idProyecto);
         Empleado empleado = empleadoService.findById(idEmpleado);
@@ -55,13 +57,12 @@ public class ProyectoService {
             throw new EmpleadoAlreadyAssignedException("Empleado con id: " + idEmpleado + " ya forma parte del proyecto");
         }
         proyecto.addEmpleado(empleado);
-        update(idProyecto, proyecto);
     }
 
+    @Transactional
     public void deleteEmpleado(Integer idProyecto, Integer idEmpleado) {
         Proyecto proyecto = findById(idProyecto);
         proyecto.removeEmpleado(empleadoService.findById(idEmpleado));
-        update(idProyecto, proyecto);
     }
 
 }
