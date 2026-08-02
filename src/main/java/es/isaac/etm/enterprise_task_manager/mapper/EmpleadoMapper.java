@@ -13,9 +13,10 @@ public class EmpleadoMapper {
         empleado.setNombre(request.getNombre());
         empleado.setRol(request.getRol());
         return empleado;
-    };
+    }
 
     public EmpleadoResponse toResponse(Empleado empleado) {
-        return new EmpleadoResponse(empleado.getId(), empleado.getNombre(),empleado.getRol());
-    };
+        return new EmpleadoResponse(empleado.getId(), empleado.getNombre(), empleado.getRol());
+    }
+
 }

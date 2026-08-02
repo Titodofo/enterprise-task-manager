@@ -6,11 +6,12 @@ import es.isaac.etm.enterprise_task_manager.mapper.ProyectoMapper;
 import es.isaac.etm.enterprise_task_manager.model.Proyecto;
 import es.isaac.etm.enterprise_task_manager.service.ProyectoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class ProyectoController {
@@ -34,19 +35,18 @@ public class ProyectoController {
     }
 
     @GetMapping("/proyectos")
-    public ResponseEntity<List<ProyectoResponse>> getProyectos(@RequestParam(required = false) String nombre) {
+    public ResponseEntity<Page<ProyectoResponse>> getProyectos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String nombre) {
 
-        List<Proyecto> proyectos;
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Proyecto> proyectos;
 
         if (nombre != null) {
-            proyectos = proyectoService.findByNombre(nombre);
+            proyectos = proyectoService.findByNombre(nombre, pageable);
         } else {
-            proyectos = proyectoService.findAll();
+            proyectos = proyectoService.findAll(pageable);
         }
 
-        List<ProyectoResponse> response = proyectos.stream()
-                .map(proyectoMapper::toResponse)
-                .toList();
+        Page<ProyectoResponse> response = proyectos.map(proyectoMapper::toResponse);
 
         return ResponseEntity.ok(response);
     }
@@ -64,7 +64,7 @@ public class ProyectoController {
 
         Proyecto proyecto = proyectoMapper.toEntity(request);
 
-        Proyecto proyectoActualizado = proyectoService.save(proyecto);
+        Proyecto proyectoActualizado = proyectoService.update(id, proyecto);
 
         return ResponseEntity.ok(proyectoMapper.toResponse(proyectoActualizado));
     }

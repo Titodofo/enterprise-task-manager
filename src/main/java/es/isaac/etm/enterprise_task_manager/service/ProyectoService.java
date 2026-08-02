@@ -6,9 +6,9 @@ import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.model.Proyecto;
 import es.isaac.etm.enterprise_task_manager.repository.ProyectoRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProyectoService {
@@ -25,22 +25,24 @@ public class ProyectoService {
         return proyectoRepository.save(proyecto);
     }
 
-    public List<Proyecto> findAll() {
-        return proyectoRepository.findAll();
+    public Page<Proyecto> findAll(Pageable pageable) {
+        return proyectoRepository.findAll(pageable);
     }
 
     public Proyecto findById(int id) {
         return proyectoRepository.findById(id).orElseThrow(() -> new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado"));
     }
 
-    public List<Proyecto> findByNombre(String nombre) {
-        return proyectoRepository.findByNombre(nombre);
+    public Page<Proyecto> findByNombre(String nombre, Pageable pageable) {
+        return proyectoRepository.findByNombreContaining(nombre, pageable);
     }
 
-    public void update(int id, Proyecto proyecto) {
+    public Proyecto update(int id, Proyecto proyecto) {
+
         findById(id);
         proyecto.setId(id);
-        proyectoRepository.save(proyecto);
+
+        return proyectoRepository.save(proyecto);
     }
 
     public void delete(int id) {
@@ -55,6 +57,7 @@ public class ProyectoService {
         if (proyecto.getEmpleados().contains(empleado)) {
             throw new EmpleadoAlreadyAssignedException("Empleado con id: " + idEmpleado + " ya forma parte del proyecto");
         }
+
         proyecto.addEmpleado(empleado);
     }
 
@@ -63,5 +66,4 @@ public class ProyectoService {
         Proyecto proyecto = findById(idProyecto);
         proyecto.removeEmpleado(empleadoService.findById(idEmpleado));
     }
-
 }

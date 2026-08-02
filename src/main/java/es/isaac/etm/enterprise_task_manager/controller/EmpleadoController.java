@@ -6,11 +6,12 @@ import es.isaac.etm.enterprise_task_manager.mapper.EmpleadoMapper;
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.service.EmpleadoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class EmpleadoController {
@@ -33,19 +34,18 @@ public class EmpleadoController {
     }
 
     @GetMapping("/empleados")
-    public ResponseEntity<List<EmpleadoResponse>> getEmpleados(@RequestParam(required = false) String nombre) {
+    public ResponseEntity<Page<EmpleadoResponse>> getEmpleados(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String nombre) {
 
-        List<Empleado> empleados;
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Empleado> empleados;
 
         if (nombre != null) {
-            empleados = empleadoService.findByNombre(nombre);
+            empleados = empleadoService.findByNombre(nombre, pageable);
         } else {
-            empleados = empleadoService.findAll();
+            empleados = empleadoService.findAll(pageable);
         }
 
-        List<EmpleadoResponse> response = empleados.stream()
-                .map(empleadoMapper::toResponse)
-                .toList();
+        Page<EmpleadoResponse> response = empleados.map(empleadoMapper::toResponse);
 
         return ResponseEntity.ok(response);
     }
@@ -62,7 +62,7 @@ public class EmpleadoController {
     public ResponseEntity<EmpleadoResponse> updateEmpleado(@PathVariable int id, @Valid @RequestBody EmpleadoRequest request) {
 
         Empleado empleado = empleadoMapper.toEntity(request);
-        Empleado empleadoActualizado = empleadoService.save(empleado);
+        Empleado empleadoActualizado = empleadoService.update(id, empleado);
 
         return ResponseEntity.ok(empleadoMapper.toResponse(empleadoActualizado));
     }

@@ -3,9 +3,9 @@ package es.isaac.etm.enterprise_task_manager.service;
 import es.isaac.etm.enterprise_task_manager.exception.EmpleadoNotFoundException;
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.repository.EmpleadoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class EmpleadoService {
@@ -20,22 +20,22 @@ public class EmpleadoService {
         return empleadoRepository.save(empleado);
     }
 
-    public List<Empleado> findAll() {
-        return empleadoRepository.findAll();
+    public Page<Empleado> findAll(Pageable pageable) {
+        return empleadoRepository.findAll(pageable);
     }
 
     public Empleado findById(int id) {
         return empleadoRepository.findById(id).orElseThrow(() -> new EmpleadoNotFoundException("Empleado con id: " + id + " no encontrado"));
     }
 
-    public List<Empleado> findByNombre(String nombre) {
-        return empleadoRepository.findByNombre(nombre);
+    public Page<Empleado> findByNombre(String nombre, Pageable pageable) {
+        return empleadoRepository.findByNombreContaining(nombre, pageable);
     }
 
-    public void update(int id, Empleado empleado) {
+    public Empleado update(int id, Empleado empleado) {
         findById(id);
         empleado.setId(id);
-        empleadoRepository.save(empleado);
+        return empleadoRepository.save(empleado);
     }
 
     public void delete(int id) {
