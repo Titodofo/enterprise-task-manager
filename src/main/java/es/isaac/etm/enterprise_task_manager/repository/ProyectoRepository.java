@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProyectoRepository extends JpaRepository<Proyecto, Integer> {
 
     List<Proyecto> findByNombre(String nombre);
+
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 
     List<Empleado> findByNombre(String nombre);
+
 }
