@@ -21,7 +21,6 @@ public class Proyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotBlank
     private String nombre;
     private String descripcion;
     private LocalDate inicio;
