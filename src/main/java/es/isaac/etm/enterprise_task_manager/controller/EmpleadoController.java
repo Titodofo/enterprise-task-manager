@@ -1,5 +1,7 @@
 package es.isaac.etm.enterprise_task_manager.controller;
 
+import es.isaac.etm.enterprise_task_manager.dto.empleado.EmpleadoRequest;
+import es.isaac.etm.enterprise_task_manager.dto.empleado.EmpleadoResponse;
 import es.isaac.etm.enterprise_task_manager.model.Empleado;
 import es.isaac.etm.enterprise_task_manager.service.EmpleadoService;
 import jakarta.validation.Valid;
@@ -19,9 +21,17 @@ public class EmpleadoController {
     }
 
     @PostMapping("/empleados")
-    public ResponseEntity<Empleado> save(@Valid @RequestBody Empleado empleado) {
+    public ResponseEntity<EmpleadoResponse> save(@Valid @RequestBody EmpleadoRequest request) {
+        Empleado empleado = new Empleado();
+        empleado.setNombre(request.getNombre());
+        empleado.setRol(request.getRol());
         Empleado empleadoGuardado = empleadoService.save(empleado);
-        return new ResponseEntity<>(empleadoGuardado, HttpStatus.CREATED);
+        EmpleadoResponse empleadoResponse = new EmpleadoResponse(
+                empleadoGuardado.getId(),
+                empleado.getNombre(),
+                empleado.getRol()
+        );
+        return new ResponseEntity<>(empleadoResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/empleados")
