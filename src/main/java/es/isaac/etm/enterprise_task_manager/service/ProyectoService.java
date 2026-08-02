@@ -7,7 +7,6 @@ import es.isaac.etm.enterprise_task_manager.model.Proyecto;
 import es.isaac.etm.enterprise_task_manager.repository.ProyectoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,13 +34,7 @@ public class ProyectoService {
     }
 
     public List<Proyecto> findByNombre(String nombre) {
-        List<Proyecto> proyectoList = new ArrayList<>();
-        for (Proyecto proyecto : proyectoRepository.findAll()) {
-            if (proyecto.getNombre().equals(nombre)) {
-                proyectoList.add(proyecto);
-            }
-        }
-        return proyectoList;
+        return proyectoRepository.findByNombre(nombre);
     }
 
     public void update(int id, Proyecto proyecto) {
