@@ -1,14 +1,14 @@
 package es.isaac.etm.enterprise_task_manager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,5 +24,7 @@ public class Empleado {
     private String nombre;
     @NotBlank
     private String rol;
+    @ManyToMany(mappedBy = "empleados")
+    private List<Proyecto> proyectos = new ArrayList<>();
 
 }

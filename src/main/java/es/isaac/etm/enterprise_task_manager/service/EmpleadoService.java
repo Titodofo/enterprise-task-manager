@@ -26,7 +26,7 @@ public class EmpleadoService {
     }
 
     public Empleado findById(int id) {
-        return empleadoRepository.findById(id).orElseThrow( () ->  new EmpleadoNotFoundException("Empleado con id: " + id + " no encontrado"));
+        return empleadoRepository.findById(id).orElseThrow(() -> new EmpleadoNotFoundException("Empleado con id: " + id + " no encontrado"));
     }
 
     public List<Empleado> findByNombre(String nombre) {

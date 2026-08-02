@@ -31,7 +31,7 @@ public class ProyectoService {
     }
 
     public Proyecto findById(int id) {
-        return proyectoRepository.findById(id).orElseThrow( () -> new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado"));
+        return proyectoRepository.findById(id).orElseThrow(() -> new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado"));
     }
 
     public List<Proyecto> findByNombre(String nombre) {

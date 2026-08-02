@@ -1,9 +1,6 @@
 package es.isaac.etm.enterprise_task_manager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +26,13 @@ public class Proyecto {
     private String descripcion;
     private LocalDate inicio;
     private LocalDate fin;
+    @ManyToMany
+    @JoinTable(
+            name = "proyecto_empleado",
+            joinColumns = @JoinColumn(name = "proyecto_id"),
+            inverseJoinColumns = @JoinColumn(name = "empleado_id")
+    )
     private List<Empleado> empleados = new ArrayList<>();
-
 
     public void addEmpleado(Empleado empleado) {
         empleados.add(empleado);
