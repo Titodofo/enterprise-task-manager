@@ -2,7 +2,7 @@ package es.isaac.etm.enterprise_task_manager.mapper;
 
 import es.isaac.etm.enterprise_task_manager.dto.empleado.EmpleadoRequest;
 import es.isaac.etm.enterprise_task_manager.dto.empleado.EmpleadoResponse;
-import es.isaac.etm.enterprise_task_manager.model.Empleado;
+import es.isaac.etm.enterprise_task_manager.domain.model.Empleado;
 import org.springframework.stereotype.Component;
 
 @Component

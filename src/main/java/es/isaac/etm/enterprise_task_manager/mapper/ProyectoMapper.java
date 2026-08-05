@@ -2,7 +2,7 @@ package es.isaac.etm.enterprise_task_manager.mapper;
 
 import es.isaac.etm.enterprise_task_manager.dto.proyecto.ProyectoRequest;
 import es.isaac.etm.enterprise_task_manager.dto.proyecto.ProyectoResponse;
-import es.isaac.etm.enterprise_task_manager.model.Proyecto;
+import es.isaac.etm.enterprise_task_manager.domain.model.Proyecto;
 import org.springframework.stereotype.Component;
 
 @Component

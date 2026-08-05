@@ -1,40 +1,40 @@
-package es.isaac.etm.enterprise_task_manager.service;
+package es.isaac.etm.enterprise_task_manager.application.service;
 
 import es.isaac.etm.enterprise_task_manager.exception.EmpleadoAlreadyAssignedException;
 import es.isaac.etm.enterprise_task_manager.exception.ProyectoNotFoundException;
-import es.isaac.etm.enterprise_task_manager.model.Empleado;
-import es.isaac.etm.enterprise_task_manager.model.Proyecto;
-import es.isaac.etm.enterprise_task_manager.repository.ProyectoRepository;
+import es.isaac.etm.enterprise_task_manager.domain.model.Empleado;
+import es.isaac.etm.enterprise_task_manager.domain.model.Proyecto;
+import es.isaac.etm.enterprise_task_manager.infrastructure.persistence.repository.ProyectoRepositoryPort;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProyectoService {
+public class ProyectoUseCase implements es.isaac.etm.enterprise_task_manager.domain.port.in.ProyectoUseCase {
 
-    private final ProyectoRepository proyectoRepository;
-    private final EmpleadoService empleadoService;
+    private final ProyectoRepositoryPort proyectoRepositoryPort;
+    private final EmpleadoUseCase empleadoUseCase;
 
-    public ProyectoService(ProyectoRepository proyectoRepository, EmpleadoService empleadoService) {
-        this.proyectoRepository = proyectoRepository;
-        this.empleadoService = empleadoService;
+    public ProyectoUseCase(ProyectoRepositoryPort proyectoRepositoryPort, EmpleadoUseCase empleadoUseCase) {
+        this.proyectoRepositoryPort = proyectoRepositoryPort;
+        this.empleadoUseCase = empleadoUseCase;
     }
 
     public Proyecto save(Proyecto proyecto) {
-        return proyectoRepository.save(proyecto);
+        return proyectoRepositoryPort.save(proyecto);
     }
 
     public Page<Proyecto> findAll(Pageable pageable) {
-        return proyectoRepository.findAll(pageable);
+        return proyectoRepositoryPort.findAll(pageable);
     }
 
     public Proyecto findById(int id) {
-        return proyectoRepository.findById(id).orElseThrow(() -> new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado"));
+        return proyectoRepositoryPort.findById(id).orElseThrow(() -> new ProyectoNotFoundException("Proyecto con id: " + id + " no encontrado"));
     }
 
     public Page<Proyecto> findByNombre(String nombre, Pageable pageable) {
-        return proyectoRepository.findByNombreContaining(nombre, pageable);
+        return proyectoRepositoryPort.findByNombreContaining(nombre, pageable);
     }
 
     public Proyecto update(int id, Proyecto proyecto) {
@@ -42,18 +42,18 @@ public class ProyectoService {
         findById(id);
         proyecto.setId(id);
 
-        return proyectoRepository.save(proyecto);
+        return proyectoRepositoryPort.save(proyecto);
     }
 
     public void delete(int id) {
         Proyecto proyecto = findById(id);
-        proyectoRepository.delete(proyecto);
+        proyectoRepositoryPort.delete(proyecto);
     }
 
     @Transactional
     public void addEmpleado(Integer idProyecto, Integer idEmpleado) {
         Proyecto proyecto = findById(idProyecto);
-        Empleado empleado = empleadoService.findById(idEmpleado);
+        Empleado empleado = empleadoUseCase.findById(idEmpleado);
         if (proyecto.getEmpleados().contains(empleado)) {
             throw new EmpleadoAlreadyAssignedException("Empleado con id: " + idEmpleado + " ya forma parte del proyecto");
         }
@@ -64,6 +64,6 @@ public class ProyectoService {
     @Transactional
     public void deleteEmpleado(Integer idProyecto, Integer idEmpleado) {
         Proyecto proyecto = findById(idProyecto);
-        proyecto.removeEmpleado(empleadoService.findById(idEmpleado));
+        proyecto.removeEmpleado(empleadoUseCase.findById(idEmpleado));
     }
 }

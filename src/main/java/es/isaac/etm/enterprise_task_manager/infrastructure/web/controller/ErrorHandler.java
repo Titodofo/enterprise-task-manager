@@ -1,4 +1,4 @@
-package es.isaac.etm.enterprise_task_manager.controller;
+package es.isaac.etm.enterprise_task_manager.infrastructure.web.controller;
 
 import es.isaac.etm.enterprise_task_manager.dto.ApiError;
 import es.isaac.etm.enterprise_task_manager.dto.ValidationError;
