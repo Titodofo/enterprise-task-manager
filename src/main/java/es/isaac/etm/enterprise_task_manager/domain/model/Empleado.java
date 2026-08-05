@@ -1,4 +1,4 @@
-package es.isaac.etm.enterprise_task_manager.model;
+package es.isaac.etm.enterprise_task_manager.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
