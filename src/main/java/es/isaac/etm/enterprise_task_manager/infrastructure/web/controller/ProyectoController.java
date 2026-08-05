@@ -1,10 +1,10 @@
-package es.isaac.etm.enterprise_task_manager.controller;
+package es.isaac.etm.enterprise_task_manager.infrastructure.web.controller;
 
 import es.isaac.etm.enterprise_task_manager.dto.proyecto.ProyectoRequest;
 import es.isaac.etm.enterprise_task_manager.dto.proyecto.ProyectoResponse;
 import es.isaac.etm.enterprise_task_manager.mapper.ProyectoMapper;
-import es.isaac.etm.enterprise_task_manager.model.Proyecto;
-import es.isaac.etm.enterprise_task_manager.service.ProyectoService;
+import es.isaac.etm.enterprise_task_manager.domain.model.Proyecto;
+import es.isaac.etm.enterprise_task_manager.domain.port.in.ProyectoUseCase;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ProyectoController {
 
-    private final ProyectoService proyectoService;
+    private final ProyectoUseCase proyectoUseCase;
     private final ProyectoMapper proyectoMapper;
 
-    public ProyectoController(ProyectoService proyectoService, ProyectoMapper proyectoMapper) {
-        this.proyectoService = proyectoService;
+    public ProyectoController(ProyectoUseCase proyectoUseCase, ProyectoMapper proyectoMapper) {
+        this.proyectoUseCase = proyectoUseCase;
         this.proyectoMapper = proyectoMapper;
     }
 
@@ -29,7 +29,7 @@ public class ProyectoController {
 
         Proyecto proyecto = proyectoMapper.toEntity(request);
 
-        Proyecto proyectoGuardado = proyectoService.save(proyecto);
+        Proyecto proyectoGuardado = proyectoUseCase.save(proyecto);
 
         return new ResponseEntity<>(proyectoMapper.toResponse(proyectoGuardado), HttpStatus.CREATED);
     }
@@ -41,9 +41,9 @@ public class ProyectoController {
         Page<Proyecto> proyectos;
 
         if (nombre != null) {
-            proyectos = proyectoService.findByNombre(nombre, pageable);
+            proyectos = proyectoUseCase.findByNombre(nombre, pageable);
         } else {
-            proyectos = proyectoService.findAll(pageable);
+            proyectos = proyectoUseCase.findAll(pageable);
         }
 
         Page<ProyectoResponse> response = proyectos.map(proyectoMapper::toResponse);
@@ -54,7 +54,7 @@ public class ProyectoController {
     @GetMapping("/proyectos/{id}")
     public ResponseEntity<ProyectoResponse> getProyectoById(@PathVariable Integer id) {
 
-        Proyecto proyecto = proyectoService.findById(id);
+        Proyecto proyecto = proyectoUseCase.findById(id);
 
         return ResponseEntity.ok(proyectoMapper.toResponse(proyecto));
     }
@@ -64,7 +64,7 @@ public class ProyectoController {
 
         Proyecto proyecto = proyectoMapper.toEntity(request);
 
-        Proyecto proyectoActualizado = proyectoService.update(id, proyecto);
+        Proyecto proyectoActualizado = proyectoUseCase.update(id, proyecto);
 
         return ResponseEntity.ok(proyectoMapper.toResponse(proyectoActualizado));
     }
@@ -72,7 +72,7 @@ public class ProyectoController {
     @DeleteMapping("/proyectos/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
 
-        proyectoService.delete(id);
+        proyectoUseCase.delete(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -80,7 +80,7 @@ public class ProyectoController {
     @PutMapping("/proyectos/{idProyecto}/empleados/{idEmpleado}")
     public ResponseEntity<Void> addEmpleado(@PathVariable Integer idProyecto, @PathVariable Integer idEmpleado) {
 
-        proyectoService.addEmpleado(idProyecto, idEmpleado);
+        proyectoUseCase.addEmpleado(idProyecto, idEmpleado);
 
         return ResponseEntity.noContent().build();
     }
@@ -88,7 +88,7 @@ public class ProyectoController {
     @DeleteMapping("/proyectos/{idProyecto}/empleados/{idEmpleado}")
     public ResponseEntity<Void> deleteEmpleado(@PathVariable Integer idProyecto, @PathVariable Integer idEmpleado) {
 
-        proyectoService.deleteEmpleado(idProyecto, idEmpleado);
+        proyectoUseCase.deleteEmpleado(idProyecto, idEmpleado);
 
         return ResponseEntity.noContent().build();
     }

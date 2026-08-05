@@ -1,8 +1,8 @@
 package es.isaac.etm.enterprise_task_manager.service;
 
 import es.isaac.etm.enterprise_task_manager.exception.EmpleadoNotFoundException;
-import es.isaac.etm.enterprise_task_manager.model.Empleado;
-import es.isaac.etm.enterprise_task_manager.repository.EmpleadoRepository;
+import es.isaac.etm.enterprise_task_manager.domain.model.Empleado;
+import es.isaac.etm.enterprise_task_manager.infrastructure.persistence.repository.EmpleadoRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmpleadoServiceTest {
+class EmpleadoUseCaseTest {
 
     @Mock
-    private EmpleadoRepository empleadoRepository;
+    private EmpleadoRepositoryPort empleadoRepositoryPort;
 
     @InjectMocks
-    private EmpleadoService empleadoService;
+    private EmpleadoUseCase empleadoUseCase;
 
     private Empleado empleado;
     private Pageable pageable;
@@ -42,12 +42,12 @@ class EmpleadoServiceTest {
     @Test
     void shouldSaveEmpleado() {
 
-        when(empleadoRepository.save(empleado)).thenReturn(empleado);
+        when(empleadoRepositoryPort.save(empleado)).thenReturn(empleado);
 
-        Empleado resultado = empleadoService.save(empleado);
+        Empleado resultado = empleadoUseCase.save(empleado);
 
         assertEquals(empleado, resultado);
-        verify(empleadoRepository).save(empleado);
+        verify(empleadoRepositoryPort).save(empleado);
     }
 
     @Test
@@ -55,37 +55,37 @@ class EmpleadoServiceTest {
 
         Page<Empleado> page = new PageImpl<>(Collections.singletonList(empleado));
 
-        when(empleadoRepository.findAll(pageable)).thenReturn(page);
+        when(empleadoRepositoryPort.findAll(pageable)).thenReturn(page);
 
-        Page<Empleado> resultado = empleadoService.findAll(pageable);
+        Page<Empleado> resultado = empleadoUseCase.findAll(pageable);
 
         assertEquals(1, resultado.getTotalElements());
         assertEquals(empleado, resultado.getContent().get(0));
-        verify(empleadoRepository).findAll(pageable);
+        verify(empleadoRepositoryPort).findAll(pageable);
     }
 
     @Test
     void shouldReturnEmpleadoWhenExists() {
 
-        when(empleadoRepository.findById(1)).thenReturn(Optional.of(empleado));
+        when(empleadoRepositoryPort.findById(1)).thenReturn(Optional.of(empleado));
 
-        Empleado resultado = empleadoService.findById(1);
+        Empleado resultado = empleadoUseCase.findById(1);
 
         assertEquals(empleado, resultado);
-        verify(empleadoRepository).findById(1);
+        verify(empleadoRepositoryPort).findById(1);
     }
 
     @Test
     void shouldThrowEmpleadoNotFoundExceptionWhenEmpleadoDoesNotExist() {
 
-        when(empleadoRepository.findById(99)).thenReturn(Optional.empty());
+        when(empleadoRepositoryPort.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(
                 EmpleadoNotFoundException.class,
-                () -> empleadoService.findById(99)
+                () -> empleadoUseCase.findById(99)
         );
 
-        verify(empleadoRepository).findById(99);
+        verify(empleadoRepositoryPort).findById(99);
     }
 
     @Test
@@ -93,14 +93,14 @@ class EmpleadoServiceTest {
 
         Page<Empleado> page = new PageImpl<>(Collections.singletonList(empleado));
 
-        when(empleadoRepository.findByNombreContaining("Isaac", pageable))
+        when(empleadoRepositoryPort.findByNombreContaining("Isaac", pageable))
                 .thenReturn(page);
 
-        Page<Empleado> resultado = empleadoService.findByNombre("Isaac", pageable);
+        Page<Empleado> resultado = empleadoUseCase.findByNombre("Isaac", pageable);
 
         assertEquals(1, resultado.getTotalElements());
         assertEquals(empleado, resultado.getContent().get(0));
-        verify(empleadoRepository).findByNombreContaining("Isaac", pageable);
+        verify(empleadoRepositoryPort).findByNombreContaining("Isaac", pageable);
     }
 
     @Test
@@ -109,58 +109,58 @@ class EmpleadoServiceTest {
         Empleado actualizado =
                 new Empleado(null, "Isaac Actualizado", "Senior", Collections.emptyList());
 
-        when(empleadoRepository.findById(1)).thenReturn(Optional.of(empleado));
+        when(empleadoRepositoryPort.findById(1)).thenReturn(Optional.of(empleado));
 
-        when(empleadoRepository.save(any(Empleado.class)))
+        when(empleadoRepositoryPort.save(any(Empleado.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Empleado resultado = empleadoService.update(1, actualizado);
+        Empleado resultado = empleadoUseCase.update(1, actualizado);
 
         assertEquals(1, resultado.getId());
         assertEquals("Isaac Actualizado", resultado.getNombre());
         assertEquals("Senior", resultado.getRol());
 
-        verify(empleadoRepository).findById(1);
-        verify(empleadoRepository).save(actualizado);
+        verify(empleadoRepositoryPort).findById(1);
+        verify(empleadoRepositoryPort).save(actualizado);
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingNonExistingEmpleado() {
 
-        when(empleadoRepository.findById(99)).thenReturn(Optional.empty());
+        when(empleadoRepositoryPort.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(
                 EmpleadoNotFoundException.class,
-                () -> empleadoService.update(99, empleado)
+                () -> empleadoUseCase.update(99, empleado)
         );
 
-        verify(empleadoRepository).findById(99);
-        verify(empleadoRepository, never()).save(any());
+        verify(empleadoRepositoryPort).findById(99);
+        verify(empleadoRepositoryPort, never()).save(any());
     }
 
     @Test
     void shouldDeleteEmpleadoWhenExists() {
 
-        when(empleadoRepository.findById(1)).thenReturn(Optional.of(empleado));
+        when(empleadoRepositoryPort.findById(1)).thenReturn(Optional.of(empleado));
 
-        empleadoService.delete(1);
+        empleadoUseCase.delete(1);
 
-        verify(empleadoRepository).findById(1);
-        verify(empleadoRepository).delete(empleado);
+        verify(empleadoRepositoryPort).findById(1);
+        verify(empleadoRepositoryPort).delete(empleado);
     }
 
     @Test
     void shouldThrowExceptionWhenDeletingNonExistingEmpleado() {
 
-        when(empleadoRepository.findById(99)).thenReturn(Optional.empty());
+        when(empleadoRepositoryPort.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(
                 EmpleadoNotFoundException.class,
-                () -> empleadoService.delete(99)
+                () -> empleadoUseCase.delete(99)
         );
 
-        verify(empleadoRepository).findById(99);
-        verify(empleadoRepository, never()).delete(any());
+        verify(empleadoRepositoryPort).findById(99);
+        verify(empleadoRepositoryPort, never()).delete(any());
     }
 
 }

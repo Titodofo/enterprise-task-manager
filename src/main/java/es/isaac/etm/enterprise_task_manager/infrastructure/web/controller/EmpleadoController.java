@@ -1,10 +1,10 @@
-package es.isaac.etm.enterprise_task_manager.controller;
+package es.isaac.etm.enterprise_task_manager.infrastructure.web.controller;
 
 import es.isaac.etm.enterprise_task_manager.dto.empleado.EmpleadoRequest;
 import es.isaac.etm.enterprise_task_manager.dto.empleado.EmpleadoResponse;
 import es.isaac.etm.enterprise_task_manager.mapper.EmpleadoMapper;
-import es.isaac.etm.enterprise_task_manager.model.Empleado;
-import es.isaac.etm.enterprise_task_manager.service.EmpleadoService;
+import es.isaac.etm.enterprise_task_manager.domain.model.Empleado;
+import es.isaac.etm.enterprise_task_manager.domain.port.in.EmpleadoUseCase;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class EmpleadoController {
 
-    private final EmpleadoService empleadoService;
+    private final EmpleadoUseCase empleadoUseCase;
     private final EmpleadoMapper empleadoMapper;
 
-    public EmpleadoController(EmpleadoService empleadoService, EmpleadoMapper empleadoMapper) {
-        this.empleadoService = empleadoService;
+    public EmpleadoController(EmpleadoUseCase empleadoUseCase, EmpleadoMapper empleadoMapper) {
+        this.empleadoUseCase = empleadoUseCase;
         this.empleadoMapper = empleadoMapper;
     }
 
@@ -28,7 +28,7 @@ public class EmpleadoController {
     public ResponseEntity<EmpleadoResponse> save(@Valid @RequestBody EmpleadoRequest request) {
 
         Empleado empleado = empleadoMapper.toEntity(request);
-        Empleado empleadoGuardado = empleadoService.save(empleado);
+        Empleado empleadoGuardado = empleadoUseCase.save(empleado);
 
         return new ResponseEntity<>(empleadoMapper.toResponse(empleadoGuardado), HttpStatus.CREATED);
     }
@@ -40,9 +40,9 @@ public class EmpleadoController {
         Page<Empleado> empleados;
 
         if (nombre != null) {
-            empleados = empleadoService.findByNombre(nombre, pageable);
+            empleados = empleadoUseCase.findByNombre(nombre, pageable);
         } else {
-            empleados = empleadoService.findAll(pageable);
+            empleados = empleadoUseCase.findAll(pageable);
         }
 
         Page<EmpleadoResponse> response = empleados.map(empleadoMapper::toResponse);
@@ -53,7 +53,7 @@ public class EmpleadoController {
     @GetMapping("/empleados/{id}")
     public ResponseEntity<EmpleadoResponse> getEmpleadoById(@PathVariable int id) {
 
-        Empleado empleado = empleadoService.findById(id);
+        Empleado empleado = empleadoUseCase.findById(id);
 
         return ResponseEntity.ok(empleadoMapper.toResponse(empleado));
     }
@@ -62,7 +62,7 @@ public class EmpleadoController {
     public ResponseEntity<EmpleadoResponse> updateEmpleado(@PathVariable int id, @Valid @RequestBody EmpleadoRequest request) {
 
         Empleado empleado = empleadoMapper.toEntity(request);
-        Empleado empleadoActualizado = empleadoService.update(id, empleado);
+        Empleado empleadoActualizado = empleadoUseCase.update(id, empleado);
 
         return ResponseEntity.ok(empleadoMapper.toResponse(empleadoActualizado));
     }
@@ -70,7 +70,7 @@ public class EmpleadoController {
     @DeleteMapping("/empleados/{id}")
     public ResponseEntity<Void> deleteEmpleado(@PathVariable int id) {
 
-        empleadoService.delete(id);
+        empleadoUseCase.delete(id);
 
         return ResponseEntity.noContent().build();
     }
